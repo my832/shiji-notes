@@ -1,4 +1,4 @@
-param([string]$JavaHome = 'C:/Program Files/Android/Android Studio/jbr', [string]$Sdk = "$PSScriptRoot/sdk", [string]$Destination = "$PSScriptRoot/releases/shiji-1.3.1.apk")
+param([string]$JavaHome = 'C:/Program Files/Android/Android Studio/jbr', [string]$Sdk = "$PSScriptRoot/sdk", [string]$Destination = "$PSScriptRoot/releases/shiji-1.3.2.apk")
 $ErrorActionPreference = 'Stop'
 $taskBuild = "$PSScriptRoot/build"
 $taskApp = "$PSScriptRoot/app"

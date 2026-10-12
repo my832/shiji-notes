@@ -43,8 +43,9 @@ public class MainActivity extends Activity {
     private final Object stateLock = new Object();
     private AtomicFile stateFile;
     private int attachmentSlots = 8;
-    private boolean darkTheme = false;
+    private volatile boolean darkTheme = false;
     private int systemBarsMode = 0;
+    private int appliedWebBackground = 0;
     private final SystemBarsBackground barsBackground = new SystemBarsBackground();
     private AlertDialog importDialog;
     private static final int PICK=100, EXPORT=101, IMPORT=102;
@@ -52,6 +53,17 @@ public class MainActivity extends Activity {
     private File attachmentDir() { return new File(getFilesDir(), "attachments"); }
 
     @Override public void onCreate(Bundle saved) {
+        stateFile = new AtomicFile(new File(getFilesDir(), "notes.json"));
+        darkTheme=(getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)==Configuration.UI_MODE_NIGHT_YES;
+        try {
+            String raw=readState();
+            if(!raw.isEmpty()){
+                String choice=new JSONObject(raw).optString("theme","system");
+                if("dark".equals(choice))darkTheme=true;else if("light".equals(choice))darkTheme=false;
+            }
+        }catch(Exception ignored){}
+        int themeId=getResources().getIdentifier(darkTheme?"AppThemeDark":"AppThemeLight","style",getPackageName());
+        if(themeId!=0)setTheme(themeId);
         super.onCreate(saved);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
@@ -66,13 +78,13 @@ public class MainActivity extends Activity {
             params.layoutInDisplayCutoutMode=WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
-        stateFile = new AtomicFile(new File(getFilesDir(), "notes.json"));
         attachmentDir().mkdirs();
         root = new FrameLayout(this);
         web = new WebView(this);
         root.addView(web, new FrameLayout.LayoutParams(-1,-1));
-        setContentView(root);
         root.setBackground(barsBackground);
+        barsBackground.setAppearance(darkTheme,systemBarsMode);
+        setContentView(root);
         updateSystemBars();
         root.setOnApplyWindowInsetsListener((view, insets) -> {
             if (Build.VERSION.SDK_INT >= 30) {
@@ -94,7 +106,6 @@ public class MainActivity extends Activity {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setSupportMultipleWindows(false);
         if (Build.VERSION.SDK_INT >= 29) settings.setForceDark(WebSettings.FORCE_DARK_OFF);
-        web.setBackgroundColor(Color.rgb(245,246,242));
         web.addJavascriptInterface(new Bridge(), "Native");
         web.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) { return true; }
@@ -112,7 +123,7 @@ public class MainActivity extends Activity {
                     String mime;
                     if (asset.equals("index.html")) mime="text/html";
                     else if (asset.equals("style.css") || asset.equals("large.css") || asset.equals("glass.css")) mime="text/css";
-                    else if (asset.equals("app.js")) mime="application/javascript";
+                    else if (asset.equals("app.js") || asset.equals("init.js")) mime="application/javascript";
                     else return emptyResponse();
                     return new WebResourceResponse(mime,"UTF-8",getAssets().open(asset));
                 } catch (Exception e) { return emptyResponse(); }
@@ -144,24 +155,28 @@ public class MainActivity extends Activity {
     }
     private void updateSystemBars() {
         barsBackground.setAppearance(darkTheme,systemBarsMode);
-        if(web!=null)web.setBackgroundColor(darkTheme?Color.rgb(23,33,30):Color.rgb(245,246,242));
+        int background=darkTheme?Color.rgb(23,33,30):Color.rgb(245,246,242);
+        if(web!=null && appliedWebBackground!=background){web.setBackgroundColor(background);appliedWebBackground=background;}
         boolean lightIcons=darkTheme || systemBarsMode==2;
         if (Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController c=getWindow().getInsetsController();
             int flags=WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
-            if(c!=null)c.setSystemBarsAppearance(lightIcons?0:flags,flags);
+            if(c!=null && (c.getSystemBarsAppearance()&flags)!=(lightIcons?0:flags))c.setSystemBarsAppearance(lightIcons?0:flags,flags);
         } else {
             int layout=View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-            getWindow().getDecorView().setSystemUiVisibility(layout|(lightIcons?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR));
+            int wanted=layout|(lightIcons?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            if(getWindow().getDecorView().getSystemUiVisibility()!=wanted)getWindow().getDecorView().setSystemUiVisibility(wanted);
         }
     }
     public class Bridge {
         @JavascriptInterface public String loadState() { try { return readState(); } catch (Exception e) { return "{\"error\":\"read\"}"; } }
         @JavascriptInterface public boolean saveState(String value) { return writeState(value); }
         @JavascriptInterface public boolean isSystemDark() { return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)==Configuration.UI_MODE_NIGHT_YES; }
-        @JavascriptInterface public void setSystemBarsMode(int mode) { runOnUiThread(()->{systemBarsMode=Math.max(0,Math.min(2,mode));updateSystemBars();}); }
+        @JavascriptInterface public boolean isDarkTheme() { return darkTheme; }
+        @JavascriptInterface public void setSystemBarsMode(int mode) { runOnUiThread(()->{int next=Math.max(0,Math.min(2,mode));if(systemBarsMode==next)return;systemBarsMode=next;updateSystemBars();}); }
         @JavascriptInterface public void setTheme(boolean dark) {
             runOnUiThread(() -> {
+                if(darkTheme==dark)return;
                 darkTheme=dark;
                 updateSystemBars();
             });

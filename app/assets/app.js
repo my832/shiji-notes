@@ -92,7 +92,8 @@ function showSheet(id){
  if(sheet)$(sheet).hidden=true;sheet=id;$(id).hidden=false;$('overlay').hidden=false;document.body.classList.add('body-modal');if(native)Native.haptic();
  syncSystemBars();
 }
-function syncSystemBars(){if(native)Native.setSystemBarsMode(!$('imageViewer').hidden?2:sheet?1:0);}
+let pendingSystemBarsSync=false;
+function syncSystemBars(){if(!native||pendingSystemBarsSync)return;pendingSystemBarsSync=true;Promise.resolve().then(()=>{pendingSystemBarsSync=false;Native.setSystemBarsMode(!$('imageViewer').hidden?2:sheet?1:0);});}
 function closeSheet(){if(sheet==='editor')saveDraft();if(sheet)$(sheet).hidden=true;sheet=null;$('overlay').hidden=true;document.body.classList.remove('body-modal');confirmAction=null;syncSystemBars();}
 function confirmDialog(title,text,action,label='确认'){showSheet('confirmSheet');$('confirmTitle').textContent=title;$('confirmText').textContent=text;$('confirmOkay').textContent=label;confirmAction=action;}
 function toast(message,undo){clearTimeout(toastTimer);$('toast').hidden=false;$('toast').textContent=message;if(undo){const b=document.createElement('button');b.textContent='撤销';b.onclick=()=>{undo();$('toast').hidden=true;};$('toast').appendChild(b);}toastTimer=setTimeout(()=>$('toast').hidden=true,undo?6500:3500);}
