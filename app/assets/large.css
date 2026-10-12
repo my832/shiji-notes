@@ -1,0 +1,63 @@
+/* A quieter, readable phone layout. */
+.storage-bulk{display:flex;gap:10px;padding:4px 20px 12px;flex-shrink:0}.storage-bulk button{flex:1;font-size:16px}.danger{color:var(--red)}
+.storage-card[data-status=done]{background:var(--green-bg);border-color:var(--green)}
+.page-tabs{display:flex;gap:6px;background:var(--hover);padding:5px;border-radius:15px;margin:0 0 18px}
+.page-tabs button{flex:1;min-height:50px;border-radius:11px;font-size:18px;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--muted)}
+.page-tabs button.selected{background:var(--panel);color:var(--primary);box-shadow:0 2px 6px #00000008;font-weight:600}
+.page-tabs span{font-size:13px;font-weight:400;opacity:.75}
+.app .board{display:block}.app .column-head{display:none}
+.app .note-card h3{font-size:20px}.app .note-content{font-size:17px;max-height:176px}
+.app .card-top .icon-btn{width:44px;height:44px}.app .status-label{font-size:14px}
+.app{padding:18px 18px 112px;max-width:1060px}
+.topbar{padding-bottom:16px;border-bottom:0;margin-bottom:12px}
+.brand small,.eyebrow,.segmented small,.menu-list small,.about p,.field-hint,.add-card{display:none}
+.brand strong{font-size:28px}.brand-icon{width:44px;height:44px}
+.icon-btn{width:44px;height:44px}.top-actions{gap:4px}
+.toolbar{gap:10px;margin-bottom:24px}
+.search{padding:10px 12px;min-height:48px}.search input{font-size:16px}
+.search svg,.filter-btn svg{width:21px;height:21px}.search .icon-btn{width:36px;height:36px}
+.filter-btn{font-size:15px;padding:0 12px;min-height:48px}
+.board{gap:16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.column-head{gap:4px;margin-bottom:14px;align-items:center}.column-head>div{gap:6px}
+.column-head h2{font-size:18px;letter-spacing:0}.column-icon{display:none}
+.count{font-size:13px;padding:2px 6px}.column-add{width:40px;height:40px;border-radius:12px}.column-add svg{width:22px;height:22px}
+.note-list{gap:14px}.note-card{padding:14px 12px 10px;border-radius:16px;box-shadow:none}
+.note-card::before{width:4px}.note-card h3{font-size:18px;line-height:1.5;margin:9px 0 8px;font-weight:600}
+.note-content{font-size:16px;line-height:1.7;opacity:.9;max-height:164px;-webkit-line-clamp:6;margin-bottom:10px}
+.card-top-actions{margin:-4px -7px -4px 0}.card-top .icon-btn{width:36px;height:40px}.card-top svg{width:20px;height:20px}
+.status-label{font-size:13px;gap:5px;white-space:nowrap}.status-dot{width:8px;height:8px}
+.tags{gap:5px;margin-top:8px}.tag{font-size:12px;padding:3px 6px}
+.card-footer{font-size:12px;margin-top:10px;padding-top:7px;gap:5px;flex-wrap:wrap;min-height:40px}
+.due svg{width:15px;height:15px}.complete-btn{font-size:14px;min-height:40px;margin-left:auto;padding:4px 3px;gap:5px}.complete-btn svg{width:23px;height:23px}
+.note-images img{width:110px;height:95px}.file-chip{font-size:13px;padding:10px 8px;min-height:44px}.file-chip svg{width:18px;height:18px}.file-chip small{display:none}
+.empty-state{font-size:14px;padding:28px 8px}.empty-state small{display:none}
+.fab{font-size:17px;min-height:54px;padding:13px 26px;bottom:20px}.fab svg{width:24px;height:24px}
+.sheet-head h2{font-size:23px}.sheet-head{padding:18px 20px 12px}.sheet-body{padding:8px 20px 20px}
+.segmented button{font-size:16px;padding:12px 5px}.title-input{font-size:23px;padding:10px 0}
+.editor textarea{font-size:17px;min-height:145px;line-height:1.7}
+.field label,.attachments-head label{font-size:16px}.field label small{font-size:12px}
+.status-options button{font-size:15px;min-height:46px;padding:11px 4px}
+.field input{font-size:16px;padding:12px 10px;min-height:48px}.form-row{gap:12px}
+.text-btn{font-size:16px;min-height:44px}.text-btn svg{width:21px;height:21px}
+.attachment-item{font-size:14px}.attachment-item small{font-size:12px}.attachment-item button{width:40px;height:40px}
+.primary-btn,.secondary-btn{font-size:17px;min-height:48px;padding:12px 20px}
+.sheet-footer>span{display:none}.sheet-footer{justify-content:flex-end}.primary-btn svg{width:21px;height:21px}
+.menu-list>button{padding:16px 6px;min-height:58px}.menu-list b{font-size:17px}.menu-list>button>span:last-child{font-size:16px}
+.menu-theme{font-size:17px}.theme-options button{font-size:15px;min-height:44px;padding:8px 12px}.about b{font-size:14px}
+.filter-options button{font-size:17px;min-height:50px}
+.storage-card h3{font-size:18px}.storage-card p{font-size:16px;max-height:110px}.storage-actions{flex-wrap:wrap}.storage-actions small{font-size:12px}
+.sheet-body>p{font-size:16px}.sheet-body>h2{font-size:22px}.toast{font-size:15px;padding:13px 16px}.toast button{font-size:15px;min-height:32px}
+.card-menu{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:10px}.card-menu button{font-size:14px;min-height:44px;padding:8px 5px;justify-content:center}.card-menu svg{width:17px;height:17px}
+@media(max-width:600px){
+ .app{padding:14px 12px 105px}.board{gap:12px}.toolbar{gap:8px;margin-bottom:18px}
+ .column-head>div{display:block}.column-head h2{font-size:18px;margin-bottom:3px}.count{font-size:12px}
+ .column-head{margin-bottom:12px}.note-card{padding:12px 10px 9px}.note-card h3{font-size:17px}.note-content{font-size:15px}
+ .card-top .icon-btn{width:30px;height:40px}.status-label{font-size:12px;gap:4px}.card-top svg{width:18px;height:18px}
+ .form-row{grid-template-columns:1fr}.sheet{max-height:96vh;max-height:96dvh}
+ .sheet-footer{padding:12px 20px 18px}.theme-options button{padding:7px 10px}
+}
+@media(max-width:350px){
+ .app{padding-left:9px;padding-right:9px}.board{gap:9px}.note-card{padding:11px 8px 8px}
+ .column-head h2{font-size:17px}.status-label{font-size:11px}.card-top .icon-btn{width:27px}.card-top svg{width:17px;height:17px}
+ .filter-btn{padding:0 9px}.filter-btn>span:first-child{display:none}.card-menu button{font-size:13px}
+}
